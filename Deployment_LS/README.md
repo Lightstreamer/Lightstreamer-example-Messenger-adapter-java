@@ -1,0 +1,2 @@
+This folder contains the binaries and the configuration resources needed to plug the Instant Messenger Demo Adapter into Lightstreamer Server.
+Just copy the "messenger" folder into "adapters" folder of your Lightstreamer installation and launch the server.
