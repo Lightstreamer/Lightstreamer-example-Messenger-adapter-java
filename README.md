@@ -14,7 +14,7 @@ It should not be used as a reference for a real case of client-originated messag
 
 # Build #
 
-If you want to skip the build process of this Adapter please note that the "Deployment_LS" folder of this project contains a ready-made deployment resource for the Lightstreamer server.
+If you want to skip the build process of this Adapter please note that in the [Deployment_LS](https://github.com/Weswit/Lightstreamer-example-Messenger-adapter-java/releases) release of this project you can find the "Deployment_LS.zip" file that contains a ready-made deployment resource for the Lightstreamer server.
 Otherwise follow these steps:
 
 *  Get the ls-adapter-interface.jar, ls-generic-adapters.jar, and log4j-1.2.15.jar files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download).
@@ -38,7 +38,7 @@ After you have Downloaded and installed Lightstreamer, please go to the "adapter
 2. Create an "adapters.xml" file inside the "messenger" folder and use a content similar to that of the file in the directory "/Deplolyment_LS/messenger" (this is an example configuration, you can modify it to your liking).
 3. Copy into /messenger/lib the jars (LS_messenger_data_adapter.jar and LS_messenger_metadata_adapter.jar) created in the previous section.
 
-Now with the "messenger" folder obtained on your behalf or with the one in the "Deployment_LS" folder of this project, you must follow these steps:
+Now with the "messenger" folder obtained on your behalf or with the one in the "Deployment_LS.zip" of this project, you must follow these steps:
 
 1. Make sure you have installed Lightstreamer Server, as explained in the GETTING_STARTED.TXT file in the installation home directory.
 2. Make sure that Lightstreamer Server is not running.
