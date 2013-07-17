@@ -14,7 +14,7 @@ It should not be used as a reference for a real case of client-originated messag
 
 # Build #
 
-If you want to skip the build process of this Adapter please note that in the [Deployment_LS](https://github.com/Weswit/Lightstreamer-example-Messenger-adapter-java/releases) release of this project you can find the "Deployment_LS.zip" file that contains a ready-made deployment resource for the Lightstreamer server.
+If you want to skip the build process of this Adapter please note that in the [deploy](https://github.com/Weswit/Lightstreamer-example-Messenger-adapter-java/releases) release of this project you can find the "deploy.zip" file that contains a ready-made deployment resource for the Lightstreamer server.
 Otherwise follow these steps:
 
 *  Get the ls-adapter-interface.jar, ls-generic-adapters.jar, and log4j-1.2.15.jar files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download).
@@ -32,13 +32,15 @@ Otherwise follow these steps:
 # Deploy #
 
 Now you are ready to deploy the Instant Messenger Demo Adapter into Lighstreamer server.<br>
-After you have Downloaded and installed Lightstreamer, please go to the "adapters" folder of your Lightstreamer Server installation. You should find a "Demo" folder containing some adapters ready-made for several demo including the Messenger one, please note that the MetaData Adapter jar installed is a mixed one that combines the functionality of several demos. If this is not your case because you have removed the "Demo" folder or you want to install the Messenger Adapter Set alone, please follow these steps to configure the Messenger Adapter Set properly:
+After you have Downloaded and installed Lightstreamer, please go to the "adapters" folder of your Lightstreamer Server installation. You should find a "Demo" folder containing some adapters ready-made for several demo including the Messenger one, please note that the MetaData Adapter jar installed is a mixed one that combines the functionality of several demos. If this is not your case because you have removed the "Demo" folder or you want to install the Messenger Adapter Set alone, please follow the bellow steps to configure the Messenger Adapter Set properly.
 
-1. You have to create a new folder to deploy the Messenger adapters, let's call it "messenger", and a "lib" folder inside it.
+You have to create a specific folder to deploy the Messenger Adapters otherwise get the ready-made "messenger" deploy folder from "deploy.zip" of the [latest release](https://github.com/Weswit/Lightstreamer-example-Messenger-adapter-java/releases) of this project and skips the next three steps.
+
+1. Create a new folder, let's call it "messenger", and a "lib" folder inside it.
 2. Create an "adapters.xml" file inside the "messenger" folder and use a content similar to that of the file in the directory "/Deplolyment_LS/messenger" (this is an example configuration, you can modify it to your liking).
 3. Copy into /messenger/lib the jars (LS_messenger_data_adapter.jar and LS_messenger_metadata_adapter.jar) created in the previous section.
 
-Now with the "messenger" folder obtained on your behalf or with the one in the "Deployment_LS.zip" of this project, you must follow these steps:
+Now your "messenger" folder is ready to be deployed in the Lightstreamer server, please follow these steps:<br>
 
 1. Make sure you have installed Lightstreamer Server, as explained in the GETTING_STARTED.TXT file in the installation home directory.
 2. Make sure that Lightstreamer Server is not running.
