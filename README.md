@@ -32,12 +32,64 @@ Otherwise follow these steps:
 # Deploy #
 
 Now you are ready to deploy the Instant Messenger Demo Adapter into Lighstreamer server.<br>
-After you have Downloaded and installed Lightstreamer, please go to the "adapters" folder of your Lightstreamer Server installation. You should find a "Demo" folder containing some adapters ready-made for several demo including the Messenger one, please note that the MetaData Adapter jar installed is a mixed one that combines the functionality of several demos. If this is not your case because you have removed the "Demo" folder or you want to install the Messenger Adapter Set alone, please follow the bellow steps to configure the Messenger Adapter Set properly.
+After you have Downloaded and installed Lightstreamer, please go to the "adapters" folder of your Lightstreamer Server installation. You should find a "Demo" folder containing some adapters ready-made for several demo including the Messenger one, please note that the MetaData Adapter jar installed is a mixed one that combines the functionality of several demos. If this is not your case because you have removed the "Demo" folder or you want to install the Messenger Adapter Set alone, please follow the below steps to configure the Messenger Adapter Set properly.
 
 You have to create a specific folder to deploy the Messenger Adapters otherwise get the ready-made "messenger" deploy folder from "deploy.zip" of the [latest release](https://github.com/Weswit/Lightstreamer-example-Messenger-adapter-java/releases) of this project and skips the next three steps.
 
 1. Create a new folder, let's call it "messenger", and a "lib" folder inside it.
-2. Create an "adapters.xml" file inside the "messenger" folder and use a content similar to that of the file in the directory "/Deplolyment_LS/messenger" (this is an example configuration, you can modify it to your liking).
+2. Create an "adapters.xml" file inside the "messenger" folder and use the following content (this is an example configuration, you can modify it to your liking):
+
+```xml      
+<?xml version="1.0"?>
+  <!-- Mandatory. Define an Adapter Set and sets its unique ID. -->
+  <adapters_conf id="DEMO">
+
+    <!-- Mandatory. Define the Metadata Adapter. -->
+    <metadata_provider>
+      <!-- Mandatory. Java class name of the adapter. -->
+      <adapter_class>messenger_demo.adapters.IMMetadataAdapter</adapter_class>
+      <!-- Optional for IMMetadataAdapter.
+          Configuration file for the Adapter's own logging.
+          Logging is managed through log4j. -->
+      <param name="log_config">adapters_log_conf.xml</param>
+      <param name="log_config_refresh_seconds">10</param>
+
+      <!-- Optional, managed by the inherited LiteralBasedProvider.
+           See LiteralBasedProvider javadoc. -->
+      <!--
+      <param name="max_bandwidth">40</param>
+      <param name="max_frequency">3</param>
+      <param name="buffer_size">30</param>
+      <param name="distinct_snapshot_length">10</param>
+      <param name="prefilter_frequency">5</param>
+      <param name="allowed_users">user123,user456</param>
+      -->
+      
+      <!-- Optional, managed by the inherited LiteralBasedProvider.
+           See LiteralBasedProvider javadoc. -->
+      <param name="item_family_1">buddy_list</param>
+      <param name="modes_for_item_family_1">COMMAND</param>
+      <!-- provided by the Data Provider for each client session -->
+      <param name="item_family_2">im_.*</param>
+      <param name="modes_for_item_family_2">DISTINCT</param>
+      
+    </metadata_provider>
+
+    <data_provider name="SIMPLE_MESSENGER">
+
+      <!-- Mandatory. Java class name of the adapter. -->
+      <adapter_class>messenger_demo.adapters.IMDataAdapter</adapter_class>
+
+      <!-- Optional for IMDataAdapter.
+           Configuration file for the Adapter's own logging.
+           Leans on the Metadata Adapter for the configuration refresh.
+           Logging is managed through log4j. -->
+      <param name="log_config">adapters_log_conf.xml</param>
+    </data_provider>
+
+  </adapters_conf>
+```
+<br> 
 3. Copy into /messenger/lib the jars (LS_messenger_data_adapter.jar and LS_messenger_metadata_adapter.jar) created in the previous section.
 
 Now your "messenger" folder is ready to be deployed in the Lightstreamer server, please follow these steps:<br>
