@@ -42,7 +42,7 @@ You have to create a specific folder to deploy the Messenger Adapters otherwise 
 ```xml      
 <?xml version="1.0"?>
   <!-- Mandatory. Define an Adapter Set and sets its unique ID. -->
-  <adapters_conf id="DEMO">
+  <adapters_conf id="MESSENGER">
 
     <!-- Mandatory. Define the Metadata Adapter. -->
     <metadata_provider>
