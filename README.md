@@ -1,4 +1,5 @@
 # Lightstreamer - Basic Messenger Demo - Java Adapter #
+<!-- START DESCRIPTION xxxxx -->
 
 This project shows the Messenger Demo Data and Metadata Adapters and how they can be plugged into Lightstreamer Server and used to feed the [Lightstreamer - Basic Messenger Demo - HTML Client](https://github.com/Weswit/Lightstreamer-example-Messenger-client-javascript) front-end. Please refer [here](http://www.lightstreamer.com/latest/Lightstreamer_Allegro-Presto-Vivace_5_1_Colosseo/Lightstreamer/DOCS-SDKs/General%20Concepts.pdf) for more details about Lightstreamer Adapters.
 The [Lightstreamer - Basic Messenger Demo - HTML Client](https://github.com/Weswit/Lightstreamer-example-Messenger-client-javascript) is a very simple instant messenger application based on Lightstreamer.
@@ -11,6 +12,8 @@ Contains the source code for the Messenger Data Adapter. This Data Adapter provi
 ## Metadata Adapter - src_metadata ##
  Contains the source code for a Metadata Adapter to be associated with the Messenger Demo Data Adapter. This Metadata Adapter inherits from the reusable `LiteralBasedProvider` in [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Weswit/Lightstreamer-example-ReusableMetadata-adapter-java) and just adds a simple support for message submission.<br>
 It should not be used as a reference for a real case of client-originated message handling, as no guaranteed delivery and no clustering support is shown.
+
+<!-- END DESCRIPTION xxxxx -->
 
 # Build #
 
@@ -105,8 +108,11 @@ Please test your Adapter with one of the clients in the [list](https://github.co
 # See Also #
 
 ## Clients using this Adapter ##
+<!-- START RELATED_ENTRIES -->
 
 * [Lightstreamer - Basic Messenger Demo - HTML Client](https://github.com/Weswit/Lightstreamer-example-Messenger-client-javascript)
+
+<!-- END RELATED_ENTRIES -->
 
 ## Related projects ##
 
