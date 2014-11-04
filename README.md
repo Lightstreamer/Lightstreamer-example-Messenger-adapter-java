@@ -75,14 +75,15 @@ If you want to install a version of this demo in your local Lightstreamer Server
 ## Build
 To build your own version of `LS_messenger_data_adapter.jar` and `LS_messenger_metadata_adapter.jar`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Weswit/Lightstreamer-example-Chat-adapter-java#install) section above, follow these steps:
 * Clone this project.
-* Get the `ls-adapter-interface.jar` and `log4j-1.2.15.jar` files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download), and copy them into the `lib` directory.
+* Get the `ls-adapter-interface.jar` file from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download), and copy it into the `lib` folder.
+* Get the `log4j-1.2.17.jar` file from [Apache log4j](https://logging.apache.org/log4j/1.2/) and copy it into the `lib` folder.
 * Create the jars `LS_messenger_data_adapter.jar` and `LS_messenger_metadata_adapter.jar` created for something like these commands:
 ```sh
-> javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar -sourcepath src/src_data -d tmp_classes src/src_data/messenger_demo/adapters/IMDataAdapter.java
+> javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.17.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar -sourcepath src/src_data -d tmp_classes src/src_data/messenger_demo/adapters/IMDataAdapter.java
  
 > jar cvf LS_messenger_data_adapter.jar -C tmp_classes src_data
  
-> javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_messenger_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes src/src_metadata/messenger_demo/adapters/IMMetadataAdapter.java
+> javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.17.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_messenger_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes src/src_metadata/messenger_demo/adapters/IMMetadataAdapter.java
  
 > jar cvf LS_messenger_metadata_adapter.jar -C tmp_classes src_metadata
 ```
