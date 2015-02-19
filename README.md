@@ -9,8 +9,6 @@ As an example of a client using this adapter, you may refer to the [Lightstreame
  
 ## Details
 
-Please refer [here](http://www.lightstreamer.com/docs/base/General%20Concepts.pdf) for more details about Lightstreamer Adapters.
-
 ### Dig The Code
 The project is comprised of source code and a deployment example. The source code is divided into two folders.
 
@@ -63,6 +61,12 @@ The `adapters.xml` file for this demo should look like:
 
   </adapters_conf>
 ```
+
+<i>NOTE: not all configuration options of an Adapter Set are exposed by the file suggested above. 
+You can easily expand your configurations using the generic template, `DOCS-SDKs/sdk_adapter_java_inprocess/doc/adapter_conf_template/adapters.xml`, as a reference.</i><br>
+<br>
+Please refer [here](http://www.lightstreamer.com/docs/base/General%20Concepts.pdf) for more details about Lightstreamer Adapters.
+
 
 ## Install
 If you want to install a version of this demo in your local Lightstreamer Server, follow these steps:
