@@ -27,37 +27,51 @@ The `adapters.xml` file for this demo should look like:
 <?xml version="1.0"?>
   <adapters_conf id="MESSENGER">
 
-    <!-- Mandatory. Define the Metadata Adapter. -->
-    <metadata_provider>
-      <!-- Mandatory. Java class name of the adapter. -->
-      <adapter_class>messenger_demo.adapters.IMMetadataAdapter</adapter_class>
-      <!-- Optional for IMMetadataAdapter.
-          Configuration file for the Adapter's own logging.
-          Logging is managed through log4j. -->
-      <param name="log_config">adapters_log_conf.xml</param>
-      <param name="log_config_refresh_seconds">10</param>
+    <!--
+      Not all configuration options of an Adapter Set are exposed by this file.
+      You can easily expand your configurations using the generic template,
+      `DOCS-SDKs/sdk_adapter_java_inprocess/doc/adapter_conf_template/adapters.xml`,
+      as a reference.
+    -->
 
-      <!-- Optional, managed by the inherited LiteralBasedProvider.
-           See LiteralBasedProvider javadoc. -->
-      <param name="item_family_1">buddy_list</param>
-      <param name="modes_for_item_family_1">COMMAND</param>
-      <!-- provided by the Data Provider for each client session -->
-      <param name="item_family_2">im_.*</param>
-      <param name="modes_for_item_family_2">DISTINCT</param>
-      
-    </metadata_provider>
+    <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
+  
+      <metadata_provider>
 
-    <data_provider name="SIMPLE_MESSENGER">
+          <adapter_class>messenger_demo.adapters.IMMetadataAdapter</adapter_class>
 
-      <!-- Mandatory. Java class name of the adapter. -->
-      <adapter_class>messenger_demo.adapters.IMDataAdapter</adapter_class>
+          <!-- Optional for IMMetadataAdapter.
+               Configuration file for the Adapter's own logging.
+               Logging is managed through log4j. -->
+          <param name="log_config">adapters_log_conf.xml</param>
+          <param name="log_config_refresh_seconds">10</param>
 
-      <!-- Optional for IMDataAdapter.
-           Configuration file for the Adapter's own logging.
-           Leans on the Metadata Adapter for the configuration refresh.
-           Logging is managed through log4j. -->
-      <param name="log_config">adapters_log_conf.xml</param>
-    </data_provider>
+          <!-- Optional, managed by the inherited LiteralBasedProvider.
+               See LiteralBasedProvider javadoc. -->
+          <!--
+          <param name="max_bandwidth">40</param>
+          <param name="max_frequency">3</param>
+          <param name="buffer_size">30</param>
+          <param name="distinct_snapshot_length">10</param>
+          <param name="prefilter_frequency">5</param>
+          <param name="allowed_users">user123,user456</param>
+          -->
+        
+          <!-- Optional, managed by the inherited LiteralBasedProvider.
+               See LiteralBasedProvider javadoc. -->
+          <param name="item_family_1">buddy_list</param>
+          <param name="modes_for_item_family_1">COMMAND</param>
+          <!-- provided by the Data Provider for each client session -->
+          <param name="item_family_2">im_.*</param>
+          <param name="modes_for_item_family_2">DISTINCT</param>
+        
+      </metadata_provider>
+
+      <data_provider name="SIMPLE_MESSENGER">
+
+          <adapter_class>messenger_demo.adapters.IMDataAdapter</adapter_class>
+
+      </data_provider>
 
   </adapters_conf>
 ```
