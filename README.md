@@ -97,13 +97,13 @@ To build your own version of `LS_messenger_data_adapter.jar` and `LS_messenger_m
 * Get the `log4j-1.2.17.jar` file from [Apache log4j](https://logging.apache.org/log4j/1.2/) and copy it into the `lib` folder.
 * Create the jars `LS_messenger_data_adapter.jar` and `LS_messenger_metadata_adapter.jar` created for something like these commands:
 ```sh
-> javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.17.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar -sourcepath src/src_data -d tmp_classes src/src_data/messenger_demo/adapters/IMDataAdapter.java
+> javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface/ls-adapter-interface.jar -sourcepath src/src_data -d tmp_classes/data src/src_data/messenger_demo/adapters/IMDataAdapter.java
  
-> jar cvf LS_messenger_data_adapter.jar -C tmp_classes src_data
+> jar cvf LS_messenger_data_adapter.jar -C tmp_classes/data .
  
-> javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.17.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_messenger_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes src/src_metadata/messenger_demo/adapters/IMMetadataAdapter.java
+> javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface/ls-adapter-interface.jar;LS_messenger_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes/metadata src/src_metadata/messenger_demo/adapters/IMMetadataAdapter.java
  
-> jar cvf LS_messenger_metadata_adapter.jar -C tmp_classes src_metadata
+> jar cvf LS_messenger_metadata_adapter.jar -C tmp_classes/metadata .
 ```
 * Stop Lightstreamer Server; copy the just compiled LS_messenger_data_adapter.jar and LS_messenger_metadata_adapter.jar in the adapters/messenger/lib folder of your Lightstreamer Server installation; restart Lightstreamer Server.
 
