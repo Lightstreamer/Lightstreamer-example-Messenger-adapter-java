@@ -33,12 +33,6 @@ The `adapters.xml` file for this demo should look like:
 
           <adapter_class>messenger_demo.adapters.IMMetadataAdapter</adapter_class>
 
-          <!-- Optional for IMMetadataAdapter.
-               Configuration file for the Adapter's own logging.
-               Logging is managed through log4j. -->
-          <param name="log_config">adapters_log_conf.xml</param>
-          <param name="log_config_refresh_seconds">10</param>
-
           <!-- Optional, managed by the inherited LiteralBasedProvider.
                See LiteralBasedProvider javadoc. -->
           <!--

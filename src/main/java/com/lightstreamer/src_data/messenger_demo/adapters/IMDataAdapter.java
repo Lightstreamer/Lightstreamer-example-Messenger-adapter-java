@@ -24,8 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.lightstreamer.interfaces.data.DataProviderException;
 import com.lightstreamer.interfaces.data.FailureException;
@@ -99,7 +99,7 @@ public class IMDataAdapter implements SmartDataProvider {
         // is executed after log configuration was completed, this parameter 
         // must be present in the Adapter Set configuration (adapters.xml):
         // <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
-        logger = Logger.getLogger("LS_demos_Logger.Messenger");
+        logger = LogManager.getLogger("LS_demos_Logger.Messenger");
 
         // Read the Adapter Set name, which is supplied by the Server as a parameter
         String adapterSetId = (String) params.get("adapters_conf.id");
