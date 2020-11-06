@@ -72,25 +72,24 @@ Please refer [here](https://lightstreamer.com/docs/ls-server/latest/General%20Co
 ## Install
 If you want to install a version of this demo in your local Lightstreamer Server, follow these steps:
 * Download *Lightstreamer Server* (Lightstreamer Server comes with a free non-expiring demo license for 20 connected users) from [Lightstreamer Download page](http://www.lightstreamer.com/download.htm), and install it, as explained in the `GETTING_STARTED.TXT` file in the installation home directory.
-* In the `adapters` folder of your Lightstreamer Server installation, you may find a `Demo` folder containing some adapters ready-made for several demo, including the Instant Messender one. If this is the case, you already have a Basic Messenger Demo Adapter installed and you may stop here. Please note that, in case of `Demo` folder already installed, the MetaData Adapter jar installed is a mixed one that combines the functionality of several demos. If the `Demo` folder is not installed, or you have removed it, or you want to install the Messenger Adapter Set alone, please continue to follow the next steps.
-* Get the `deploy.zip` file of the [latest release](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/releases), unzip it, and copy the just unzipped `messenger` folder into the `adapters` folder of your Lightstreamer Server installation.
+* Get the `deploy.zip` file of the [latest release](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/releases), unzip it, and copy the just unzipped `MessengerDemo` folder into the `adapters` folder of your Lightstreamer Server installation.
 * Launch Lightstreamer Server.
 * Test the Adapter, launching one of the [Clients Using This Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java#clients-using-this-adapter).
 
 ## Build
-To build your own version of `LS_messenger_data_adapter.jar` and `LS_messenger_metadata_adapter.jar`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-example-Chat-adapter-java#install) section above, follow these steps:
-* Clone this project.
-* Get the `ls-adapter-interface.jar` file from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download), and copy it into the `lib` folder.
-* Get the `log4j-1.2.17.jar` file from [Apache log4j](https://logging.apache.org/log4j/1.2/) and copy it into the `lib` folder.
-* Create the jars `LS_messenger_data_adapter.jar` and `LS_messenger_metadata_adapter.jar` created for something like these commands:
-```sh
- > mkdir tmp_classes/data tmp_classes/metadata
- > javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar -sourcepath src/src_data -d tmp_classes/data src/src_data/messenger_demo/adapters/IMDataAdapter.java
- > jar cvf LS_messenger_data_adapter.jar -C tmp_classes/data .
- > javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar;LS_messenger_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes/metadata src/src_metadata/messenger_demo/adapters/IMMetadataAdapter.java
- > jar cvf LS_messenger_metadata_adapter.jar -C tmp_classes/metadata .
+
+To build your own version of `example-Messenger-adapter-java-0.0.1-SNAPSHOT.jar` instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java#install) section above, you have two options:
+either use [Maven](https://maven.apache.org/) (or other build tools) to take care of dependencies and building (recommended) or gather the necessary jars yourself and build it manually.
+For the sake of simplicity only the Maven case is detailed here.
+
+### Maven
+
+You can easily build and run this application using Maven through the pom.xml file located in the root folder of this project. As an alternative, you can use an alternative build tool (e.g. Gradle, Ivy, etc.) by converting the provided pom.xml file.
+
+Assuming Maven is installed and available in your path you can build the demo by running
+```sh 
+ mvn install dependency:copy-dependencies 
 ```
-* Stop Lightstreamer Server; copy the just compiled LS_messenger_data_adapter.jar and LS_messenger_metadata_adapter.jar in the adapters/messenger/lib folder of your Lightstreamer Server installation; restart Lightstreamer Server.
 
 ## See Also
 
@@ -109,5 +108,6 @@ To build your own version of `LS_messenger_data_adapter.jar` and `LS_messenger_m
 
 ## Lightstreamer Compatibility Notes
 
-* Compatible with Lightstreamer SDK for Java In-Process Adapters since 6.0
+- Compatible with Lightstreamer SDK for Java In-Process Adapters since 7.3.
+- For a version of this example compatible with Lightstreamer SDK for Java Adapters version 6.0, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/tree/pre_mvn).
 - For a version of this example compatible with Lightstreamer SDK for Java Adapters version 5.1, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/tree/for_Lightstreamer_5.1).
