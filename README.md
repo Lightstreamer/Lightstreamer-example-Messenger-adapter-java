@@ -73,6 +73,7 @@ Please refer [here](https://lightstreamer.com/docs/ls-server/latest/General%20Co
 If you want to install a version of this demo in your local Lightstreamer Server, follow these steps:
 * Download *Lightstreamer Server* (Lightstreamer Server comes with a free non-expiring demo license for 20 connected users) from [Lightstreamer Download page](https://lightstreamer.com/download/), and install it, as explained in the `GETTING_STARTED.TXT` file in the installation home directory.
 * Get the `deploy.zip` file of the [latest release](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/releases), unzip it, and copy the just unzipped `MessengerDemo` folder into the `adapters` folder of your Lightstreamer Server installation.
+* [Optional] Customize the logging settings in log4j configuration file: `MessengerDemo/classes/log4j2.xml`.
 * Launch Lightstreamer Server.
 * Test the Adapter, launching one of the [Clients Using This Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java#clients-using-this-adapter).
 
