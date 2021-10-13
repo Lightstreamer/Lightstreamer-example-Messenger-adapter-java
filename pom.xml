@@ -36,17 +36,8 @@
           </execution>
         </executions>
       </plugin>
-         
     </plugins>
   </build>
-  
-  <repositories>
-    <repository>
-      <id>Twitter</id>
-      <name>Twitter repository</name>
-      <url>https://maven.twttr.com/</url>
-    </repository>
-  </repositories>
 
   <distributionManagement>
     <repository>
@@ -54,7 +45,7 @@
       <name>GitHub Lightstreamer Apache Maven Packages</name>
       <url>https://maven.pkg.github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java</url>
     </repository>
-  </distributionManagement>  
+  </distributionManagement>
 
   <dependencies>
     <dependency>
