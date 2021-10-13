@@ -31,7 +31,7 @@ The `adapters.xml` file for this demo should look like:
   
       <metadata_provider>
 
-          <adapter_class>messenger_demo.adapters.IMMetadataAdapter</adapter_class>
+          <adapter_class>com.lightstreamer.examples.messenger_demo.adapters.IMMetadataAdapter</adapter_class>
 
           <!-- Optional, managed by the inherited LiteralBasedProvider.
                See LiteralBasedProvider javadoc. -->

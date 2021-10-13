@@ -35,9 +35,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <mainClass>messenger_demo.adapters.IMMetadataAdapter</mainClass>
-        </configuration>
       </plugin>
          
     </plugins>

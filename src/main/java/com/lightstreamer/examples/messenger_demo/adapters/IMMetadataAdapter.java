@@ -14,12 +14,11 @@
   limitations under the License.
 */
 
-package messenger_demo.adapters;
+package com.lightstreamer.examples.messenger_demo.adapters;
 
 
 import java.io.File;
 import java.util.Map;
-import messenger_demo.adapters.IMDataAdapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
