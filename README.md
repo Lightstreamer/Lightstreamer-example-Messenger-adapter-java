@@ -56,7 +56,7 @@ The `adapters.xml` file for this demo should look like:
 
       <data_provider name="SIMPLE_MESSENGER">
 
-          <adapter_class>messenger_demo.adapters.IMDataAdapter</adapter_class>
+          <adapter_class>com.lightstreamer.examples.messenger_demo.adapters.IMDataAdapter</adapter_class>
 
       </data_provider>
 
