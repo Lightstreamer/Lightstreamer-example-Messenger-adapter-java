@@ -79,8 +79,8 @@ public class IMMetadataAdapter extends LiteralBasedProvider {
         logger.info("MessengerMetadataAdapter ready");
     }
 
-    public String[] getItems(String user, String session, String id) throws ItemsException {
-        String[] broken = super.getItems(user, session, id);
+    public String[] getItems(String user, String session, String id, String dataAdapter) throws ItemsException {
+        String[] broken = super.getItems(user, session, id, dataAdapter);
 
         for (int i=0; i < broken.length; i++) {
             checkIMName(broken[i], user);
