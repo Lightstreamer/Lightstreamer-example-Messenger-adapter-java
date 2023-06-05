@@ -111,7 +111,7 @@ public class IMMetadataAdapter extends LiteralBasedProvider {
         this.loadIMFeed();
         this.handleIMMessage(pieces, message, user);
 
-        return CompletableFuture.completedStage(null);
+        return CompletableFuture.completedFuture(null);
     }
 
     /**
