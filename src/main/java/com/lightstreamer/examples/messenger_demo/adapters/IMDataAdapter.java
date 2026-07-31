@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,30 +29,19 @@ import java.util.concurrent.Executors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lightstreamer.interfaces.data.DataProviderException;
-import com.lightstreamer.interfaces.data.FailureException;
-import com.lightstreamer.interfaces.data.ItemEventListener;
-import com.lightstreamer.interfaces.data.SmartDataProvider;
-import com.lightstreamer.interfaces.data.SubscriptionException;
+import com.lightstreamer.adapter.common.InitException;
+import com.lightstreamer.adapter.common.Mode;
+import com.lightstreamer.adapter.data.DataAdapter;
+import com.lightstreamer.adapter.data.ItemListener;
+import com.lightstreamer.adapter.data.ItemManager;
+import com.lightstreamer.adapter.data.SubscriptionException;
 
-public class IMDataAdapter implements SmartDataProvider {
+public class IMDataAdapter implements DataAdapter {
 
-    private static String LIST = "buddy_list";
-    private static String USER_PREFIX = "im_";
-    private static String ME = "me";
-    private static String NOBODY = "nobody";
-
-    /**
-     * A static map, to be used by the Metadata Adapter to find the data
-     * adapter instance; this allows the Metadata Adapter to forward client
-     * messages to the adapter.
-     * The map allows multiple instances of this Data Adapter to be included
-     * in different Adapter Sets. Each instance is identified with the name
-     * of the related Adapter Set; defining multiple instances in the same
-     * Adapter Set is not allowed.
-     */
-    public static final ConcurrentHashMap<String, IMDataAdapter> feedMap =
-        new ConcurrentHashMap<String, IMDataAdapter>();
+    private static final String LIST = "buddy_list";
+    private static final String USER_PREFIX = "im_";
+    private static final String ME = "me";
+    private static final String NOBODY = "nobody";
 
     /**
      * Private logger; a specific "LS_demos_Logger.Messenger" category
@@ -60,28 +51,22 @@ public class IMDataAdapter implements SmartDataProvider {
 
     /**
      * A map containing all active subscriptions to the nicknames;
-     * it associates each item name with the item handle to be used
-     * to identify the item towards Lightstreamer Kernel.
+     * it associates each item name with the related UserItemManager.
      * The map also indicates the current set of active users.
      */
-    private final ConcurrentHashMap<String, Object> subscriptions =
-        new ConcurrentHashMap<String, Object>();
+    private final ConcurrentHashMap<String, UserItemManager> subscriptions =
+        new ConcurrentHashMap<String, UserItemManager>();
 
     /**
-     * Handle to identify the LIST item, as received by Lightstreamer.
+     * The ListItemManager for the LIST item.
      */
-    private Object listHandle;
+    private volatile ListItemManager listManager;
 
     /**
      * Mutex to tighten subscription list manipulations and updates
      * for the LIST items.
      */
-    private Object listMutex = new Object();
-
-    /**
-     * The listener of updates set by Lightstreamer Kernel.
-     */
-    private ItemEventListener listener;
+    private final Object listMutex = new Object();
 
     /**
      * Used to enqueue the calls to the listener.
@@ -92,7 +77,7 @@ public class IMDataAdapter implements SmartDataProvider {
         executor = Executors.newSingleThreadExecutor();
     }
 
-    public void init(Map params, File configDir) throws DataProviderException {
+    public void init(Map<String, String> params, File configDir) throws InitException {
         
         // Logging configuration for the demo is carried out in the init
         // method of Metadata Adapter. In order to be sure that this method 
@@ -101,94 +86,29 @@ public class IMDataAdapter implements SmartDataProvider {
         // <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
         logger = LogManager.getLogger("LS_demos_Logger.Messenger");
 
-        // Read the Adapter Set name, which is supplied by the Server as a parameter
-        String adapterSetId = (String) params.get("adapters_conf.id");
-
-        // Put a reference to this instance on a static map
-        // to be read by the Metadata Adapter
-        feedMap.put(adapterSetId, this);
-
         // Adapter ready
         logger.info("IMDataAdapter ready");
 
     }
 
-
-    public void subscribe(String item, Object handle, boolean needsIterator)
-            throws SubscriptionException, FailureException {
-
-        if (item.equals(LIST)) {
-            // returns the list of the users currently available,
-
-            synchronized (listMutex) {
-                assert(listHandle == null);
-
-                listHandle = handle;
-
-                Enumeration<String> keys = subscriptions.keys();
-                while(keys.hasMoreElements()) {
-                    String user = keys.nextElement();
-                    this.updateList("ADD", user, true);
-                }
-                sendListEOS();
-            }
-
-
-        } else if (item.startsWith(USER_PREFIX)) {
-            String user = item.substring(USER_PREFIX.length());
-
-            assert(! subscriptions.containsKey(user));
-
-            synchronized (listMutex) {
-                // Add the new item to the list of subscribed items
-                subscriptions.put(user, handle);
-
-                this.updateList("ADD", user, false);
-            }
-
-        } else {
-            throw new SubscriptionException("Unexpected item name: " + item);
-        }
-
-        logger.info(item + " subscribed");
-    }
-
-    public void unsubscribe(String item) throws SubscriptionException,
-            FailureException {
-
-        if (item.equals(LIST)) {
-            synchronized (listMutex) {
-                assert(listHandle != null);
-                listHandle = null;
-            }
-
-        } else if (item.startsWith(USER_PREFIX)) {
-            String user = item.substring(USER_PREFIX.length());
-
-            assert(subscriptions.containsKey(user));
-
-            synchronized (listMutex) {
-                subscriptions.remove(user);
-                this.updateList("DELETE", user, false);
-            }
-
-        } else {
-            throw new SubscriptionException("Unexpected item name: " + item);
-        }
-
-    }
-
-
-    public boolean isSnapshotAvailable(String item)
+    @Override
+    public CompletionStage<ItemManager> getItemManager(String itemName)
             throws SubscriptionException {
-        if (item.equals(LIST)) {
-            return true;
+
+        if (itemName.equals(LIST)) {
+            return CompletableFuture.completedFuture(new ListItemManager());
+        } else if (itemName.startsWith(USER_PREFIX)) {
+            return CompletableFuture.completedFuture(new UserItemManager(itemName));
+        } else {
+            CompletableFuture<ItemManager> f = new CompletableFuture<>();
+            f.completeExceptionally(new SubscriptionException("Unexpected item name: " + itemName));
+            return f;
         }
-        return false;
     }
 
-    public void setListener(ItemEventListener listener) {
-        this.listener = listener;
+    @Override
+    public void shutdown() {
+        executor.shutdown();
     }
 
     /**
@@ -197,105 +117,200 @@ public class IMDataAdapter implements SmartDataProvider {
      */
     public void sendMessage(String from, String to, String message) {
         if (from.equals(to)) {
-            Object handle = subscriptions.get(from);
-            if (handle != null) {
-                this.sendMessage(ME,ME,message,handle);
+            UserItemManager manager = subscriptions.get(from);
+            if (manager != null) {
+                manager.sendMessage(ME, ME, message);
             }
         } else {
-            Object toHandle = subscriptions.get(to);
-            Object fromHandle = subscriptions.get(from);
+            UserItemManager toManager = subscriptions.get(to);
+            UserItemManager fromManager = subscriptions.get(from);
 
-            if (toHandle == null) {
-                if (fromHandle != null) {
-                    this.sendMessage(ME,NOBODY,message,fromHandle);
+            if (toManager == null) {
+                if (fromManager != null) {
+                    fromManager.sendMessage(ME, NOBODY, message);
                 }
             } else {
-                this.sendMessage(from,ME,message,toHandle);
-                if (fromHandle != null) {
-                    this.sendMessage(ME,to,message,fromHandle);
+                toManager.sendMessage(from, ME, message);
+                if (fromManager != null) {
+                    fromManager.sendMessage(ME, to, message);
                 }
             }
         }
 
     }
 
-    private void sendMessage(String from, String to, String message, Object handle) {
-        final Object currHandle = handle;
-        final HashMap<String, String> update = new HashMap<String, String>();
-        update.put("fromNick", from);
-        update.put("toNick", to);
-        update.put("message", message);
+    private class ListItemManager implements ItemManager {
+        private volatile ItemListener listener;
 
-        //If we have a listener create a new Runnable to be used as a task to pass the
-        //new update to the listener
-        Runnable updateTask = new Runnable() {
-            public void run() {
-                // call the update on the listener;
-                // in case the listener has just been detached,
-                // the listener should detect the case
-                listener.smartUpdate(currHandle, update, false);
-            }
-        };
-
-        //We add the task on the executor to pass to the listener the actual status
-        executor.execute(updateTask);
-
-    }
-
-    private void updateList(String command, String key, final boolean isForSnapshot) {
-        assert(command.equals("ADD") || ! isForSnapshot);
-        final Object currHandle = listHandle;
-        if (currHandle == null) {
-            return;
+        @Override
+        public Mode getSupportedMode() {
+            return Mode.COMMAND;
         }
 
-        final HashMap<String, String> update = new HashMap<String, String>();
-        update.put("command", command);
-        update.put("key", key);
+        @Override
+        public CompletionStage<Void> subscribe(ItemListener listener) throws SubscriptionException {
+            // returns the list of the users currently available,
 
-        //If we have a listener create a new Runnable to be used as a task to pass the
-        //new update to the listener
-        Runnable updateTask = new Runnable() {
-            public void run() {
-                // call the update on the listener;
-                // in case the listener has just been detached,
-                // the listener should detect the case
-                listener.smartUpdate(currHandle, update, isForSnapshot);
+            synchronized (listMutex) {
+                assert(listManager == null);
+
+                this.listener = listener;
+                listManager = this;
+
+                Enumeration<String> keys = subscriptions.keys();
+                while(keys.hasMoreElements()) {
+                    String user = keys.nextElement();
+                    this.updateList(ItemListener.ADD_COMMAND, user, true);
+                }
+                sendListEOS();
             }
-        };
 
-        //We add the task on the executor to pass to the listener the actual status
-        executor.execute(updateTask);
-
-    }
-
-    private void sendListEOS() {
-        final Object currHandle = listHandle;
-        if (currHandle == null) {
-            return;
+            logger.info(LIST + " subscribed");
+            return CompletableFuture.completedFuture(null);
         }
 
-        //If we have a listener create a new Runnable to be used as a task to pass the
-        //new update to the listener
-        Runnable eosTask = new Runnable() {
-            public void run() {
-                // call the update on the listener;
-                // in case the listener has just been detached,
-                // the listener should detect the case
-                listener.smartEndOfSnapshot(currHandle);
+        @Override
+        public boolean isSnapshotAvailable() {
+            return true;
+        }
+
+        @Override
+        public CompletionStage<Void> unsubscribe() throws SubscriptionException {
+            synchronized (listMutex) {
+                assert(listManager != null);
+                listManager = null;
+                this.listener = null;
             }
-        };
+            return CompletableFuture.completedFuture(null);
+        }
 
-        //We add the task on the executor to pass to the listener the actual status
-        executor.execute(eosTask);
+        private void sendListEOS() {
+            final ItemListener currListener = this.listener;
 
+            //If we have a listener create a new Runnable to be used as a task to pass the
+            //new update to the listener
+            Runnable eosTask = new Runnable() {
+                public void run() {
+                    // call the update on the listener;
+                    // in case the listener has just been detached,
+                    // the listener should detect the case
+                    currListener.endOfSnapshot();
+                }
+            };
+
+            //We add the task on the executor to pass to the listener the actual status
+            executor.execute(eosTask);
+
+        }
+
+        private void updateList(String command, String key, final boolean isForSnapshot) {
+            final ItemListener currListener = this.listener;
+
+            final HashMap<String, String> update = new HashMap<String, String>();
+            update.put(ItemListener.COMMAND_FIELD, command);
+            update.put(ItemListener.KEY_FIELD, key);
+
+            //If we have a listener create a new Runnable to be used as a task to pass the
+            //new update to the listener
+            Runnable updateTask = new Runnable() {
+                public void run() {
+                    // call the update on the listener;
+                    // in case the listener has just been detached,
+                    // the listener should detect the case
+                    if (isForSnapshot) {
+                        currListener.snapshot(update, null);
+                    } else {
+                        currListener.update(update);
+                    }
+                }
+            };
+
+            //We add the task on the executor to pass to the listener the actual status
+            executor.execute(updateTask);
+
+        }
     }
 
+    private class UserItemManager implements ItemManager {
+        private final String itemName;
+        private volatile ItemListener listener;
 
-    public void subscribe(String arg0, boolean arg1)
-            throws SubscriptionException, FailureException {
-        //NEVER CALLED
+        UserItemManager(String itemName) {
+            this.itemName = itemName;
+        }
 
+        @Override
+        public Mode getSupportedMode() {
+            return Mode.DISTINCT;
+        }
+
+        @Override
+        public Integer getDistinctSnapshotLength() {
+            return 30;
+        }
+
+        @Override
+        public CompletionStage<Void> subscribe(ItemListener listener) throws SubscriptionException {
+            String user = itemName.substring(USER_PREFIX.length());
+
+            assert(! subscriptions.containsKey(user));
+
+            synchronized (listMutex) {
+                // Add the new item to the list of subscribed items
+                this.listener = listener;
+                subscriptions.put(user, this);
+
+                if (listManager != null) {
+                    listManager.updateList(ItemListener.ADD_COMMAND, user, false);
+                }
+            }
+
+            logger.info(itemName + " subscribed");
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override
+        public boolean isSnapshotAvailable() {
+            return false;
+        }
+
+        @Override
+        public CompletionStage<Void> unsubscribe() throws SubscriptionException {
+            String user = itemName.substring(USER_PREFIX.length());
+
+            assert(subscriptions.containsKey(user));
+
+            synchronized (listMutex) {
+                subscriptions.remove(user);
+                this.listener = null;
+                if (listManager != null) {
+                    listManager.updateList(ItemListener.DELETE_COMMAND, user, false);
+                }
+            }
+            return CompletableFuture.completedFuture(null);
+        }
+
+        private void sendMessage(String from, String to, String message) {
+            final ItemListener currListener = this.listener;
+            final HashMap<String, String> update = new HashMap<String, String>();
+            update.put("fromNick", from);
+            update.put("toNick", to);
+            update.put("message", message);
+
+            //If we have a listener create a new Runnable to be used as a task to pass the
+            //new update to the listener
+            Runnable updateTask = new Runnable() {
+                public void run() {
+                    // call the update on the listener;
+                    // in case the listener has just been detached,
+                    // the listener should detect the case
+                    currListener.update(update);
+                }
+            };
+
+            //We add the task on the executor to pass to the listener the actual status
+            executor.execute(updateTask);
+        }
     }
 
 }

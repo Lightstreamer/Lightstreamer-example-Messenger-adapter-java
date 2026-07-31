@@ -16,7 +16,7 @@ The project is comprised of source code and a deployment example. The source cod
 Contains the source code for the Messenger Data Adapter. This Data Adapter provides a basic round-trip support for client-originated messages to client-specific Items.
 
 #### Messenger MetadataAdapter
-Contains the source code for a Metadata Adapter to be associated with the Messenger Demo Data Adapter. This Metadata Adapter inherits from the reusable `LiteralBasedProvider` in [Lightstreamer Java In-Process Adapter SDK](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter) and just adds a simple support for message submission.<br>
+Contains the source code for a Metadata Adapter to be associated with the Messenger Demo Data Adapter. This Metadata Adapter implements `MetadataAdapter` directly, with no authentication logic (suitable for demos only), and adds a simple support for message submission.<br>
 It should not be used as a reference for a real case of client-originated message handling, as no guaranteed delivery and no clustering support is shown.
 
 #### The Adapter Set Configuration
@@ -33,24 +33,8 @@ The `adapters.xml` file for this demo should look like:
 
           <adapter_class>com.lightstreamer.examples.messenger_demo.adapters.IMMetadataAdapter</adapter_class>
 
-          <!-- Optional, managed by the inherited LiteralBasedProvider.
-               See LiteralBasedProvider javadoc. -->
-          <!--
-          <param name="max_bandwidth">40</param>
-          <param name="max_frequency">3</param>
-          <param name="buffer_size">30</param>
-          <param name="distinct_snapshot_length">10</param>
-          <param name="prefilter_frequency">5</param>
-          <param name="allowed_users">user123,user456</param>
-          -->
-        
-          <!-- Optional, managed by the inherited LiteralBasedProvider.
-               See LiteralBasedProvider javadoc. -->
-          <param name="item_family_1">buddy_list</param>
-          <param name="modes_for_item_family_1">COMMAND</param>
-          <!-- provided by the Data Provider for each client session -->
-          <param name="item_family_2">im_.*</param>
-          <param name="modes_for_item_family_2">DISTINCT</param>
+          <!-- Ensure compatibility with old versions of the demo Clients. -->
+          <support_LiteralBased_subscriptions>Y</support_LiteralBased_subscriptions>
         
       </metadata_provider>
 
@@ -103,13 +87,13 @@ Assuming Maven is installed and available in your path you can build the demo by
 
 ### Related Projects
 
-* [LiteralBasedProvider Metadata Adapter](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter)
 * [Lightstreamer - Basic Chat Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Chat-adapter-java)
 * [Lightstreamer - Basic Chat Demo - HTML Client](https://github.com/Lightstreamer/Lightstreamer-example-chat-client-javascript)
 
 ## Lightstreamer Compatibility Notes
 
-- Compatible with Lightstreamer SDK for Java In-Process Adapters since version 8.0.
+- Compatible with Lightstreamer SDK for Java In-Process Adapters since version 9.0.
+- For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters versions 8.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/tree/XXXXXXXXXXXXXXXXXXXXX).
 - For a version of this example compatible with Lightstreamer SDK for Java Adapters versions 7.4.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/tree/last_for_interface_7.4.x).
 - For a version of this example compatible with Lightstreamer SDK for Java Adapters versions 7.0 to 7.3, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/tree/last_for_interface_7.3.x).
 - For a version of this example compatible with Lightstreamer SDK for Java Adapters version 6.0, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Messenger-adapter-java/tree/pre_mvn).
